@@ -15,7 +15,7 @@ layout: default
 </table>
 
 <p>
-  Version 1.0.5
+  Version 1.0.6
 </p>
 
 <style>
@@ -67,6 +67,7 @@ function processData(allText) {
     }
     // Here I have to sort
     lines.sort(compareRanking);
+    lines.reverse();
     var table = document.getElementById("positions");
     for (var i=0; i<lines.length; i++) {
       var row = table.insertRow(-1);
