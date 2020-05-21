@@ -6,26 +6,16 @@ layout: default
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-<table style="width:100%">
+<table id="positions" style="width:100%">
   <tr>
     <th>Posição</th>
     <th>Nome</th>
     <th>Pontuação</th>
   </tr>
-  <tr>
-    <td>1</td>
-    <td>Pedro</td>
-    <td>100000</td>
-  </tr>
-  <tr>
-    <td>2</td>
-    <td>Davi</td>
-    <td>-3</td>
-  </tr>
 </table>
 
 <p>
-  Version 1.0.1
+  Version 1.0.2
 </p>
 
 <style>
@@ -57,11 +47,26 @@ function processData(allText) {
 
             var tarr = [];
             for (var j=0; j<headers.length; j++) {
-                tarr.push(headers[j]+":"+data[j]);
+                tarr.push(data[j]);
             }
             lines.push(tarr);
         }
     }
+    // Here I have to sort
+    var table = document.getElementById("positions");
+    for (var i=0; i<lines.length; i++) {
+      var row = table.insertRow(-1);
+      // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+      var position = row.insertCell(0);
+      var name = row.insertCell(1);
+      var points = row.insertCell(1);
+
+      // Add some text to the new cells:
+      position.innerHTML = i.toString();
+      name.innerHTML = lines[i][0];
+      points.innerHTML = lines[i][1];
+    }
+    
     console.log('done loading');
     console.log(headers);
     console.log(lines);
