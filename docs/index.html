@@ -15,7 +15,7 @@ layout: default
 </table>
 
 <p>
-  Version 1.0.4
+  Version 1.0.5
 </p>
 
 <style>
@@ -35,6 +35,19 @@ layout: default
         success: function(data) {processData(data);}
      });
 });
+  
+function compareRanking(a, b) {
+  points_a = a[1]
+  points_b = b[1]
+  if (points_a < points_b) {
+    return -1;
+  }
+  if (points_a > points_b) {
+    return 1;
+  }
+  // a must be equal to b
+  return 0;
+}
 
 function processData(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
@@ -53,6 +66,7 @@ function processData(allText) {
         }
     }
     // Here I have to sort
+    lines.sort(compareRanking);
     var table = document.getElementById("positions");
     for (var i=0; i<lines.length; i++) {
       var row = table.insertRow(-1);
@@ -62,7 +76,7 @@ function processData(allText) {
       var points = row.insertCell(2);
 
       // Add some text to the new cells:
-      position.innerHTML = i.toString();
+      position.innerHTML = (i+1).toString();
       name.innerHTML = lines[i][0];
       points.innerHTML = lines[i][1];
     }
