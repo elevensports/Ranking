@@ -15,7 +15,7 @@ layout: default
 </table>
 
 <p>
-  Version 1.0.6
+  Version 1.0.7
 </p>
 
 <style>
@@ -27,13 +27,17 @@ layout: default
 </style>
 
 <script>
-  $(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        url: "ranking.csv",
-        dataType: "text",
-        success: function(data) {processData(data);}
-     });
+$.ajaxSetup ({
+  // Disable caching of AJAX responses */
+  cache: false
+});
+$(document).ready(function() {
+  $.ajax({
+      type: "GET",
+      url: "ranking.csv",
+      dataType: "text",
+      success: function(data) {processData(data);}
+   });
 });
   
 function compareRanking(a, b) {
