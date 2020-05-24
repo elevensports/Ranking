@@ -1,4 +1,6 @@
-nome,pontuacao
-Pedro,10000
-Luis, -15
-Davi,-3
+,Pedro,Davi,Luis,Carina,Gabi
+Pedro,,,,,
+Davi,7-3;7-3,,,,
+Luis,7-3;7-3,5-7;4-7,,,
+Carina,7-3;3-7;10-6,5-7;7-6;10-8,7-3;7-4,,
+Gabi,7-4;5-7;10-6,WO-2,WO-2,6-7;7-5;8-10,

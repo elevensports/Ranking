@@ -11,11 +11,20 @@ layout: default
     <th>Posição</th>
     <th>Nome</th>
     <th>Pontuação</th>
+    <th>Vitórias</th>
+    <th>Derrotas</th>
+    <th>Sets W</th>
+    <th>Sets D</th>
+    <th>Games W</th>
+    <th>Games D</th>
+    <th>Saldo Sets</th>
+    <th>Saldo Games</th>
+    <th>WO</th>
   </tr>
 </table>
 
 <p>
-  Version 1.0.7
+  Version 1.0.8
 </p>
 
 <style>
@@ -39,10 +48,10 @@ $(document).ready(function() {
       success: function(data) {processData(data);}
    });
 });
-  
+
 function compareRanking(a, b) {
-  points_a = a[1]
-  points_b = b[1]
+  points_a = a["points"]
+  points_b = b["points"]
   if (points_a < points_b) {
     return -1;
   }
@@ -50,18 +59,111 @@ function compareRanking(a, b) {
     return 1;
   }
   // a must be equal to b
+  // console.log('direct');
+  // console.log(direct_confrontation[a["name"]]);
+  // return direct_confrontation[a["name"]][b["name"]];
   return 0;
+  // return 0;
 }
 
+function loop_break(list_i, list_j, list) {
+  do {
+    var overpower = tie_breaker(list_i, list_j, list);
+    if (overpower != -1) {
+      var aux = list[overpower];
+      list[overpower] = list[list_i];
+      list[list_i] = aux;
+    }
+    list_i += 1;
+
+  } while (overpower != -1 && (list_j - list_i) > 0);
+}
+
+function find_ties(list) {
+  console.log('find ties');
+  var current_points = list[0]["points"];
+  var list_i = 0;
+  var list_j = 0;
+  for (var i=1; i<list.length; i++) {
+    console.log(current_points, list_i, list_j);
+    if (current_points == list[i]["points"]) {
+      list_j = i;
+    }
+    else {
+      if ((list_j - list_i) > 0) {
+        loop_break(list_i, list_j, list);
+      }
+
+      // still problematic
+      if ((list_j - list_i) > 0) {
+
+      }
+      list_i = i;
+      list_j = i;
+
+    }
+    current_points = list[i]["points"];
+  }
+  if ((list_j - list_i) > 0) {
+    loop_break(list_i, list_j, list);
+  }
+}
+
+function tie_breaker(list_i, list_j, list) {
+  console.log('tie breaker', list_i, list_j);
+  // Check if someone overpowers all others
+  for (var i=list_i; i<=list_j; i++) {
+    flag = 0;
+    for (var j=list_i; j<=list_j; j++) {
+      if (i != j) {
+        name_1 = list[i]["name"]
+        name_2 = list[j]["name"]
+        console.log(name_1, name_2, direct_confrontation[name_1][name_2])
+        if (direct_confrontation[name_1][name_2] < 1 || direct_confrontation[name_1][name_2] == undefined) {
+          flag = 1;
+          break;
+        }
+      }
+    }
+    if (flag === 0) {
+      console.log('overpower: ', list[i]["name"])
+      return i;
+    }
+  }
+
+  return -1;
+
+}
+
+function final_breaker(list_i, list_j, list) {
+  console.log('final breaker');
+}
+
+var direct_confrontation = {}
 function processData(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(',');
     var lines = [];
+    console.log('headers', headers);
+    var confrontation = {};
+    // var direct_confrontation = {};
+    for (var i=1; i<headers.length; i++) {
+      direct_confrontation[headers[i]] = {};
+      confrontation[headers[i]] = {};
+    }
 
     for (var i=1; i<allTextLines.length; i++) {
         var data = allTextLines[i].split(',');
+        var name = data[0]
+        // console.log('confrontation: ', confrontation)
+        // console.log('name: ', name)
+        for (var j=1; j<data.length; j++) {
+          if (i != j) {
+            confrontation[name][headers[j]] = 'd;'+data[j]
+            confrontation[headers[j]][name] = 'i;'+data[j]
+          }
+        }
         if (data.length == headers.length) {
-
             var tarr = [];
             for (var j=0; j<headers.length; j++) {
                 tarr.push(data[j]);
@@ -69,26 +171,164 @@ function processData(allText) {
             lines.push(tarr);
         }
     }
+
+    // Calculate points
+    var final_ranking = [];
+    for (var i=1; i<headers.length; i++) {
+      var name_1 = headers[i];
+      var points = 0;
+      var victories = 0;
+      var defeats = 0;
+      var games_w = 0;
+      var games_l = 0;
+      var sets_w = 0;
+      var sets_l = 0;
+      var wo = 0;
+      for (var j=1; j<headers.length; j++) {
+        var name_2 = headers[j];
+        if (i != j) {
+          var data = confrontation[name_1][name_2];
+          // Exceptions
+          var sets = data.split(';');
+          // console.log("SETS: ", sets);
+          console.log(name_1, name_2)
+          if (sets[1] === "") {
+            console.log('sets: ', sets)
+            continue;
+          }
+          if (sets[1] === "WO-1") {
+            if (sets[0] === "d") {
+              points -= 1;
+              wo += 1;
+              direct_confrontation[name_1][name_2] = -1
+              direct_confrontation[name_2][name_1] = 1
+
+              continue;
+            }
+
+            direct_confrontation[name_1][name_2] = 1
+            direct_confrontation[name_2][name_1] = -1
+            points += 3;
+            sets_w += 2;
+            games_w += 12;
+            continue;
+          }
+          if (sets[1] === "WO-2") {
+            if (sets[0] === "i") {
+              points -= 1;
+              wo += 1;
+              direct_confrontation[name_1][name_2] = -1
+              direct_confrontation[name_2][name_1] = 1
+
+              continue;
+            }
+
+            direct_confrontation[name_1][name_2] = 1
+            direct_confrontation[name_2][name_1] = -1
+            points += 3;
+            sets_w += 2;
+            games_w += 12;
+            continue;
+          }
+          if (sets[1] === "WO-X") {
+            wo += 1;
+            points -= 1;
+          }
+          var d = (sets[0] === "d")? 0 : 1; // direction (if me - someone or someone - me)
+          // console.console.log();(data)
+          var games_w_ = 0;
+          var games_l_ = 0;
+          var sets_w_ = 0;
+          var sets_l_ = 0;
+          for (var k=1; k<sets.length; k++) {
+            // tie break
+            // console.log('set k', sets[k])
+            var game = sets[k].split('-');
+            // console.log(game)
+            game[d] = parseInt(game[d])
+            game[1-d] = parseInt(game[1-d])
+            // console.log(game)
+            if (game[d] > game[1-d]) {
+              sets_w_ += 1;
+            }
+            else {
+              sets_l_ += 1;
+            }
+
+            if (k < 3) {
+              games_w_ += game[d]
+              games_l_ += game[1-d]
+            }
+          }
+          games_w += games_w_;
+          games_l += games_l_;
+          sets_w += sets_w_;
+          sets_l += sets_l_;
+
+          points += sets_w_;
+          if (sets_l_ == 0) {
+            points += 1;
+          }
+          if (sets_w_ > sets_l_) {
+            victories += 1;
+            direct_confrontation[name_1][name_2] = 1
+            direct_confrontation[name_2][name_1] = -1
+          }
+          else {
+            defeats += 1;
+            direct_confrontation[name_1][name_2] = -1
+            direct_confrontation[name_2][name_1] = 1
+          }
+        }
+      }
+      var individual = {
+        "name": name_1,
+        "points": points,
+        "victories": victories,
+        "defeats": defeats,
+        "games_w": games_w,
+        "games_l": games_l,
+        "sets_w": sets_w,
+        "sets_l": sets_l,
+        "WO": wo
+      }
+      final_ranking.push(individual);
+    }
+
+    console.log('final ranking: ', final_ranking)
+    final_ranking.sort(compareRanking);
+    final_ranking.reverse();
+    find_ties(final_ranking);
+
     // Here I have to sort
-    lines.sort(compareRanking);
-    lines.reverse();
+    // lines.sort(compareRanking);
+    // lines.reverse();
     var table = document.getElementById("positions");
-    for (var i=0; i<lines.length; i++) {
+    for (var i=0; i<final_ranking.length; i++) {
       var row = table.insertRow(-1);
       // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
       var position = row.insertCell(0);
-      var name = row.insertCell(1);
-      var points = row.insertCell(2);
-
-      // Add some text to the new cells:
       position.innerHTML = (i+1).toString();
-      name.innerHTML = lines[i][0];
-      points.innerHTML = lines[i][1];
+      cells = ["name", "points", "victories", "defeats", "sets_w", "sets_l", "games_w", "games_l"];
+      for (var j=0; j<cells.length; j++) {
+        var cell = row.insertCell(j+1);
+        cell.innerHTML = final_ranking[i][cells[j]];
+      }
+      var saldo_sets = row.insertCell(cells.length+1);
+      saldo_sets.innerHTML = final_ranking[i]["sets_w"] - final_ranking[i]["sets_l"];
+      var saldo_games = row.insertCell(cells.length+2);
+      saldo_games.innerHTML = final_ranking[i]["games_w"] - final_ranking[i]["games_l"];
+      var wo = row.insertCell(cells.length+3);
+      wo.innerHTML = final_ranking[i]["WO"];
+      // Add some text to the new cells:
+      // position.innerHTML = (i+1).toString();
+      // name.innerHTML = final_ranking[i]["name"];
+      // points.innerHTML = final_ranking[i]["points"];
     }
-    
+
     console.log('done loading');
     console.log(headers);
-    console.log(lines);
+    // console.log(lines);
     // alert(lines);
 }
 </script>
