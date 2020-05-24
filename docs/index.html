@@ -66,6 +66,50 @@ function compareRanking(a, b) {
   // return 0;
 }
 
+function compareTie(a, b) {
+  var compare_values_a = [];
+  var compare_values_b = [];
+  var value_a = a["sets_w"] - a["sets_l"]
+  var value_b = b["sets_w"] - b["sets_l"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  var value_a = a["games_w"] - a["games_l"]
+  var value_b = b["games_w"] - b["games_l"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  var value_a = a["sets_w"]
+  var value_b = b["sets_w"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  var value_a = a["games_w"]
+  var value_b = b["games_w"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  var value_a = -a["sets_l"]
+  var value_b = -b["sets_l"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  var value_a = -a["games_l"]
+  var value_b = -b["games_l"]
+  compare_values_a.push(value_a);
+  compare_values_b.push(value_b);
+
+  for (var i=0; i<compare_values_a.length; i++) {
+    if (compare_values_a[i] != compare_values_b[i]) {
+      console.log(i, a["name"], b["name"], compare_values_a, compare_values_b)
+      return (compare_values_a[i] < compare_values_b[i])? -1 : 1;
+    }
+  }
+
+  console.log('SAME');
+  return 0;
+}
+
 function loop_break(list_i, list_j, list) {
   do {
     var overpower = tie_breaker(list_i, list_j, list);
@@ -73,10 +117,21 @@ function loop_break(list_i, list_j, list) {
       var aux = list[overpower];
       list[overpower] = list[list_i];
       list[list_i] = aux;
+      list_i += 1;
     }
-    list_i += 1;
 
   } while (overpower != -1 && (list_j - list_i) > 0);
+
+  // still problematic
+  if ((list_j - list_i) > 0) {
+    var aux_list = list.slice(list_i, list_j+1);
+    console.log('AUX LIST', aux_list);
+    aux_list.sort(compareTie);
+    aux_list.reverse();
+    for (var i=list_i; i<=list_j; i++) {
+      list[i] = aux_list[i];
+    }
+  }
 }
 
 function find_ties(list) {
@@ -93,11 +148,6 @@ function find_ties(list) {
       if ((list_j - list_i) > 0) {
         loop_break(list_i, list_j, list);
       }
-
-      // still problematic
-      if ((list_j - list_i) > 0) {
-
-      }
       list_i = i;
       list_j = i;
 
@@ -107,6 +157,7 @@ function find_ties(list) {
   if ((list_j - list_i) > 0) {
     loop_break(list_i, list_j, list);
   }
+
 }
 
 function tie_breaker(list_i, list_j, list) {
