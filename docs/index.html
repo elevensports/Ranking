@@ -24,7 +24,7 @@ layout: default
 </table>
 
 <p>
-  Version 1.0.8
+  Version 1.0.9
 </p>
 
 <style>
@@ -128,10 +128,14 @@ function loop_break(list_i, list_j, list) {
     console.log('AUX LIST', aux_list);
     aux_list.sort(compareTie);
     aux_list.reverse();
-    for (var i=list_i; i<=list_j; i++) {
-      list[i] = aux_list[i];
+    l_ = 0;
+    for (var l=list_i; l<=list_j; l++) {
+      console.log('Replace: ', l, list[l], aux_list[l_])
+      list[l] = aux_list[l_];
+      l_++;
     }
   }
+  console.log('FINAL LOOP BREAK: ', list.slice())
 }
 
 function find_ties(list) {
@@ -195,7 +199,7 @@ function processData(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(',');
     var lines = [];
-    console.log('headers', headers);
+    // console.log('headers', headers);
     var confrontation = {};
     // var direct_confrontation = {};
     for (var i=1; i<headers.length; i++) {
@@ -210,6 +214,8 @@ function processData(allText) {
         // console.log('name: ', name)
         for (var j=1; j<data.length; j++) {
           if (i != j) {
+            // console.log(name)
+            // console.log(confrontation[name])
             confrontation[name][headers[j]] = 'd;'+data[j]
             confrontation[headers[j]][name] = 'i;'+data[j]
           }
@@ -242,9 +248,9 @@ function processData(allText) {
           // Exceptions
           var sets = data.split(';');
           // console.log("SETS: ", sets);
-          console.log(name_1, name_2)
+          // console.log(name_1, name_2)
           if (sets[1] === "") {
-            console.log('sets: ', sets)
+            // console.log('sets: ', sets)
             continue;
           }
           if (sets[1] === "WO-1") {
@@ -332,7 +338,7 @@ function processData(allText) {
           }
         }
       }
-      var individual = {
+      const individual = {
         "name": name_1,
         "points": points,
         "victories": victories,
@@ -343,12 +349,15 @@ function processData(allText) {
         "sets_l": sets_l,
         "WO": wo
       }
+      console.log('individual: ', name_1, individual)
+      console.log('push: ', final_ranking.slice())
       final_ranking.push(individual);
     }
 
-    console.log('final ranking: ', final_ranking)
+    console.log('final ranking: ', final_ranking.slice())
     final_ranking.sort(compareRanking);
     final_ranking.reverse();
+    console.log('final ranking sorted: ', final_ranking.slice())
     find_ties(final_ranking);
 
     // Here I have to sort
@@ -363,6 +372,7 @@ function processData(allText) {
       cells = ["name", "points", "victories", "defeats", "sets_w", "sets_l", "games_w", "games_l"];
       for (var j=0; j<cells.length; j++) {
         var cell = row.insertCell(j+1);
+        console.log('final ranking', final_ranking.slice())
         cell.innerHTML = final_ranking[i][cells[j]];
       }
       var saldo_sets = row.insertCell(cells.length+1);
