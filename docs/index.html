@@ -109,15 +109,27 @@ $(document).ready(function(){
   </tr>
 </table>
 
+<div class="square"></div>
+Classificados para próxima fase
+
 <p>
-  Version 2.0.0
+  Version 2.1.0
 </p>
 
 <style>
-  .page-header {
+  /* .page-header {
   color: #ffff;
   background-color: #A067AB;
   background-image: radial-gradient(#dc812d, #4d4d4d);
+} */
+table {
+  text-align: center;
+}
+.square {
+  height: 15px;
+  width: 15px;
+  background-color: peru;
+  display: inline-block;
 }
 </style>
 
@@ -467,10 +479,24 @@ function processData(allText) {
       saldo_games.innerHTML = final_ranking[i]["games_w"] - final_ranking[i]["games_l"];
       var wo = row.insertCell(cells.length+3);
       wo.innerHTML = final_ranking[i]["WO"];
-      // Add some text to the new cells:
-      // position.innerHTML = (i+1).toString();
-      // name.innerHTML = final_ranking[i]["name"];
-      // points.innerHTML = final_ranking[i]["points"];
+
+      // Additional style
+      if (i < 4) {
+        row.style.backgroundColor = "peru";
+        row.style.fontWeight = "bold";
+        row.style.color = "white"
+      }
+      // if (i == 3) {
+      //   var row = table.insertRow(-1);
+      //   var cell = row.insertCell(0);
+      //   cell.colSpan = 12;
+      //   cell.innerHTML = "Classificados para próxima fase"
+      //   var row = table.insertRow(-1);
+      //   var cell = row.insertCell(0);
+      //   cell.colSpan = 12;
+      //   cell.innerHTML = "-"
+      // }
+
     }
 
     console.log('done loading');
