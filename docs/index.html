@@ -6,6 +6,50 @@ layout: default
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
+<div class="container">
+  <h2>Modalidade</h2>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" id="menu1" type="button" data-toggle="dropdown">Trocar modalidade
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Masculino A</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Masculino B</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Feminino A</a></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $('.dropdown-menu li a').on('click', function(){
+    var x = $(this).html();
+    if (x === "Masculino A") {
+      $("#positions tr").remove();
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "ranking.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+    else if (x === "Masculino B") {
+      $("#positions tr").remove();
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "ranking_2.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+  });
+});
+</script>
+
 <table id="positions" style="width:100%">
   <tr>
     <th>Posição</th>
