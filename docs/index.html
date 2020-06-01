@@ -14,8 +14,11 @@ layout: default
     <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Masculino A</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Masculino B</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Masculino C</a></li>
       <li role="presentation" class="divider"></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Feminino A</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Feminino B</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Feminino C</a></li>
     </ul>
   </div>
 </div>
@@ -24,23 +27,62 @@ layout: default
 $(document).ready(function(){
   $('.dropdown-menu li a').on('click', function(){
     var x = $(this).html();
+    $("#positions tr:not(:first)").remove();
     if (x === "Masculino A") {
-      $("#positions tr").remove();
       $(document).ready(function() {
         $.ajax({
             type: "GET",
-            url: "ranking.csv",
+            url: "Rei e Rainha da Areia - Masc A.csv",
             dataType: "text",
             success: function(data) {processData(data);}
          });
       });
     }
     else if (x === "Masculino B") {
-      $("#positions tr").remove();
       $(document).ready(function() {
         $.ajax({
             type: "GET",
-            url: "ranking_2.csv",
+            url: "Rei e Rainha da Areia - Masc B.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+    else if (x === "Masculino C") {
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "Rei e Rainha da Areia - Masc C.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+    else if (x === "Feminino A") {
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "Rei e Rainha da Areia - Fem A.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+    else if (x === "Feminino B") {
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "Rei e Rainha da Areia - Fem B.csv",
+            dataType: "text",
+            success: function(data) {processData(data);}
+         });
+      });
+    }
+    else if (x === "Feminino C") {
+      $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "Rei e Rainha da Areia - Fem C.csv",
             dataType: "text",
             success: function(data) {processData(data);}
          });
@@ -68,7 +110,7 @@ $(document).ready(function(){
 </table>
 
 <p>
-  Version 1.10.0
+  Version 2.0.0
 </p>
 
 <style>
@@ -87,7 +129,7 @@ $.ajaxSetup ({
 $(document).ready(function() {
   $.ajax({
       type: "GET",
-      url: "ranking.csv",
+      url: "Rei e Rainha da Areia - Masc A.csv",
       dataType: "text",
       success: function(data) {processData(data);}
    });
