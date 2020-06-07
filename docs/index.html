@@ -97,6 +97,7 @@ $(document).ready(function(){
     <th>Posição</th>
     <th>Nome</th>
     <th>Pontuação</th>
+    <th>Partidas</th>
     <th>Vitórias</th>
     <th>Derrotas</th>
     <th>Sets V</th>
@@ -452,6 +453,7 @@ function processData(allText) {
       const individual = {
         "name": name_1,
         "points": points,
+        "games_played": victories+defeats,
         "victories": victories,
         "defeats": defeats,
         "games_w": games_w,
@@ -480,7 +482,7 @@ function processData(allText) {
       // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
       var position = row.insertCell(0);
       position.innerHTML = (i+1).toString();
-      cells = ["name", "points", "victories", "defeats", "sets_w", "sets_l", "games_w", "games_l"];
+      cells = ["name", "points", "games_played", "victories", "defeats", "sets_w", "sets_l", "games_w", "games_l"];
       for (var j=0; j<cells.length; j++) {
         var cell = row.insertCell(j+1);
         console.log('final ranking', final_ranking.slice())
