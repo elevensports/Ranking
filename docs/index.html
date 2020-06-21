@@ -352,6 +352,7 @@ function processData(allText) {
       var games_l = 0;
       var sets_w = 0;
       var sets_l = 0;
+      var wo_w = 0;
       var wo = 0;
       for (var j=1; j<headers.length; j++) {
         var name_2 = headers[j];
@@ -380,6 +381,7 @@ function processData(allText) {
             points += 3;
             sets_w += 2;
             games_w += 12;
+            wo_w += 1;
             continue;
           }
           if (sets[1] === "WO-2") {
@@ -397,6 +399,7 @@ function processData(allText) {
             points += 3;
             sets_w += 2;
             games_w += 12;
+            wo_w += 1;
             continue;
           }
           if (sets[1] === "WO-X") {
@@ -453,7 +456,7 @@ function processData(allText) {
       const individual = {
         "name": name_1,
         "points": points,
-        "games_played": victories+defeats,
+        "games_played": victories+defeats+wo+wo_w,
         "victories": victories,
         "defeats": defeats,
         "games_w": games_w,
