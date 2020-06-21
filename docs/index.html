@@ -370,6 +370,7 @@ function processData(allText) {
             if (sets[0] === "d") {
               points -= 1;
               wo += 1;
+              defeats += 1;
               direct_confrontation[name_1][name_2] = -1
               direct_confrontation[name_2][name_1] = 1
 
@@ -381,13 +382,13 @@ function processData(allText) {
             points += 3;
             sets_w += 2;
             games_w += 12;
-            wo_w += 1;
+            victories += 1;
             continue;
           }
           if (sets[1] === "WO-2") {
             if (sets[0] === "i") {
               points -= 1;
-              wo += 1;
+              defeats += 1;
               direct_confrontation[name_1][name_2] = -1
               direct_confrontation[name_2][name_1] = 1
 
@@ -399,11 +400,12 @@ function processData(allText) {
             points += 3;
             sets_w += 2;
             games_w += 12;
-            wo_w += 1;
+            victories += 1;
             continue;
           }
           if (sets[1] === "WO-X") {
             wo += 1;
+            defeats += 1;
             points -= 1;
           }
           var d = (sets[0] === "d")? 0 : 1; // direction (if me - someone or someone - me)
@@ -456,7 +458,7 @@ function processData(allText) {
       const individual = {
         "name": name_1,
         "points": points,
-        "games_played": victories+defeats+wo+wo_w,
+        "games_played": victories+defeats,
         "victories": victories,
         "defeats": defeats,
         "games_w": games_w,
