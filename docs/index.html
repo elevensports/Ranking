@@ -278,9 +278,11 @@ function find_ties(list) {
 
 function tie_breaker(list_i, list_j, list) {
   console.log('tie breaker', list_i, list_j);
+
   // Check if someone overpowers all others
   for (var i=list_i; i<=list_j; i++) {
     flag = 0;
+    flag_at_least_1 = 0;
     for (var j=list_i; j<=list_j; j++) {
       if (i != j) {
         name_1 = list[i]["name"]
@@ -407,6 +409,9 @@ function processData(allText) {
             wo += 1;
             defeats += 1;
             points -= 1;
+            sets_l += 2;
+            games_l += 6;
+            continue
           }
           var d = (sets[0] === "d")? 0 : 1; // direction (if me - someone or someone - me)
           // console.console.log();(data)
@@ -472,10 +477,10 @@ function processData(allText) {
       final_ranking.push(individual);
     }
 
-    console.log('final ranking: ', final_ranking.slice())
+    // console.log('final ranking: ', final_ranking.slice())
     final_ranking.sort(compareRanking);
     final_ranking.reverse();
-    console.log('final ranking sorted: ', final_ranking.slice())
+    // console.log('final ranking sorted: ', final_ranking.slice())
     find_ties(final_ranking);
 
     // Here I have to sort
@@ -490,7 +495,7 @@ function processData(allText) {
       cells = ["name", "points", "games_played", "victories", "defeats", "sets_w", "sets_l", "games_w", "games_l"];
       for (var j=0; j<cells.length; j++) {
         var cell = row.insertCell(j+1);
-        console.log('final ranking', final_ranking.slice())
+        // console.log('final ranking', final_ranking.slice())
         cell.innerHTML = final_ranking[i][cells[j]];
       }
       var saldo_sets = row.insertCell(cells.length+1);
